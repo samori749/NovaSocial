@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaSocial Web Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            900: '#0f172a',
+                            darkBg: '#0b1120',
+                            darkCard: '#131d31',
+                            darkCardHover: '#1c2a45',
+                            borderDark: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* NovaSocial Signature Gradient Story Ring */
+        .nova-story-ring {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #ec4899 100%);
+            padding: 2.5px;
+        }
+        
+        .animated-gradient {
+            background: linear-gradient(-45deg, #2563eb, #7c3aed, #db2777, #059669);
+            background-size: 400% 400%;
+            animation: gradient 12s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-nova-darkBg dark:text-slate-100 transition-colors duration-200 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+    <div id="app" class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto relative">
+
+        <!-- LEFT SIDEBAR / NAVIGATION (DESKTOP) -->
+        <aside id="sidebar" class="hidden md:flex flex-col w-64 border-r border-slate-200 dark:border-nova-borderDark p-4 sticky top-0 h-screen justify-between bg-white/80 dark:bg-nova-darkCard/80 backdrop-blur-md z-20">
+            <div>
+                <!-- Brand Logo & Author Credit -->
+                <div class="flex items-center gap-3 px-3 py-3 mb-4 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">
+                        NS
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">NovaSocial</h1>
+                        <span class="text-[11px] text-pink-500 dark:text-pink-400 font-semibold tracking-wide">by: Zakypov Sabit</span>
+                    </div>
+                </div>
+
+                <!-- Nav Menu -->
+                <nav class="space-y-1" id="nav-menu">
+                    <!-- Dynamic navigation buttons injected by JS -->
+                </nav>
+            </div>
+
+            <!-- User Info Sidebar Bottom -->
+            <div id="sidebar-user-card" class="border-t border-slate-200 dark:border-nova-borderDark pt-4 flex items-center justify-between px-2">
+                <!-- Dynamic user content -->
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 max-w-2xl w-full mx-auto border-x border-slate-200 dark:border-nova-borderDark min-h-screen pb-20 md:pb-6 flex flex-col">
+            <header class="sticky top-0 z-10 bg-white/80 dark:bg-nova-darkCard/80 backdrop-blur-md border-b border-slate-200 dark:border-nova-borderDark px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="md:hidden w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-pink-500 text-white font-bold flex items-center justify-center text-sm shadow-md shadow-blue-500/20">NS</span>
+                    <div>
+                        <h2 id="page-title" class="text-lg md:text-xl font-bold tracking-tight">Главная</h2>
+                        <span class="md:hidden text-[10px] text-pink-500 font-semibold block">by: Zakypov Sabit</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1.5 md:gap-2">
+                    <!-- Quick Admin Account Switcher Button -->
+                    <button onclick="switchAccount('admin')" class="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold shadow-md hover:opacity-90 transition flex items-center gap-1" title="Переключиться на Admin">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Админ</span>
+                    </button>
+                    <button onclick="openNotificationsModal()" class="relative p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" title="Уведомления">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-nova-darkCard"></span>
+                    </button>
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" title="Переключить тему">
+                        <i data-lucide="sun" class="hidden dark:block w-5 h-5"></i>
+                        <i data-lucide="moon" class="block dark:hidden w-5 h-5"></i>
+                    </button>
+                    <button onclick="openLanguageModal()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" title="Выбор языка">
+                        <i data-lucide="globe" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Tab View Container -->
+            <div id="view-container" class="p-4 flex-1">
+                <!-- Content injected by JavaScript -->
+            </div>
+        </main>
+
+        <aside class="hidden lg:block w-80 p-4 space-y-4 sticky top-0 h-screen overflow-y-auto">
+            <!-- Search Widget -->
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                <input type="text" id="search-input" onkeyup="handleSearch(this.value)" placeholder="Поиск постов или друзей..." class="w-full bg-slate-200 dark:bg-nova-darkCard pl-9 pr-4 py-2.5 rounded-xl text-sm border border-transparent dark:border-nova-borderDark focus:ring-2 focus:ring-blue-500 outline-none transition">
+            </div>
+
+            <!-- Quick Account Switcher Recommendations Widget -->
+            <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-4 shadow-sm">
+                <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4 text-blue-500"></i> Аккаунты (Клик для входа)
+                </h3>
+                <div id="sidebar-friends-recommendations" class="space-y-3">
+                    <!-- Dynamic user list -->
+                </div>
+            </div>
+
+            <!-- Stats & Info Widget -->
+            <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-4 shadow-sm">
+                <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i> О платформе
+                </h3>
+                <div class="space-y-2 text-xs text-slate-500 dark:text-slate-400">
+                    <p class="flex justify-between"><span class="font-semibold text-slate-700 dark:text-slate-200">Автор проекта:</span> <span class="font-bold text-pink-500">Zakypov Sabit</span></p>
+                    <p class="flex justify-between"><span>Версия:</span> <span class="font-semibold text-blue-500">4.0 NovaStyle</span></p>
+                    <p class="flex justify-between"><span>Функции:</span> <span>Истории, Голос, Reels, Чат</span></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- BOTTOM NAVIGATION (MOBILE) -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-nova-darkCard/90 backdrop-blur-md border-t border-slate-200 dark:border-nova-borderDark flex justify-around p-2 z-30" id="mobile-nav-menu">
+            <!-- Mobile nav items injected by JS -->
+        </nav>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notifications-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-nova-darkCard w-full max-w-md rounded-2xl p-5 shadow-2xl border border-slate-200 dark:border-nova-borderDark space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="bell" class="w-5 h-5 text-blue-500"></i> Уведомления
+                </h3>
+                <button onclick="closeModal('notifications-modal')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="notifications-list" class="space-y-3 max-h-80 overflow-y-auto">
+                <!-- Dynamic notifications -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-nova-darkCard w-full max-w-md rounded-2xl p-5 shadow-2xl border border-slate-200 dark:border-nova-borderDark space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="user-cog" class="w-5 h-5 text-blue-500"></i> Редактирование профиля
+                </h3>
+                <button onclick="closeModal('edit-profile-modal')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-400 block mb-1">Аватарка (выбрать из файлов)</label>
+                <div class="flex items-center gap-3">
+                    <img id="edit-avatar-preview" class="w-12 h-12 rounded-full object-cover border border-slate-300 dark:border-slate-700">
+                    <label class="cursor-pointer bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition flex-1 justify-center">
+                        <i data-lucide="image" class="w-4 h-4 text-blue-500"></i> Загрузить фото
+                        <input type="file" id="edit-avatar-file-input" accept="image/*" onchange="previewAvatarFile(event)" class="hidden">
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-400">О себе (Bio)</label>
+                <textarea id="edit-bio-input" rows="3" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1 resize-none"></textarea>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-400">Номер телефона</label>
+                <input type="text" id="edit-phone-input" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1">
+            </div>
+            <button onclick="saveProfileChanges()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/25 transition">
+                Сохранить изменения
+            </button>
+        </div>
+    </div>
+
+    <!-- Comments Modal Drawer -->
+    <div id="comments-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white dark:bg-nova-darkCard w-full max-w-lg rounded-t-2xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200 dark:border-nova-borderDark">
+            <div class="p-4 border-b border-slate-200 dark:border-nova-borderDark flex items-center justify-between">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="message-square" class="w-5 h-5 text-blue-500"></i> Комментарии
+                </h3>
+                <button onclick="closeModal('comments-modal')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div id="comments-list" class="p-4 overflow-y-auto flex-1 space-y-3">
+                <!-- Dynamic comments -->
+            </div>
+
+            <!-- Comment Input Box with Voice Recorder -->
+            <div class="p-3 border-t border-slate-200 dark:border-nova-borderDark flex flex-col gap-2 bg-slate-50 dark:bg-slate-900/50">
+                <div id="comment-voice-preview" class="hidden items-center justify-between p-2 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="mic" class="w-4 h-4 text-blue-500 animate-pulse"></i>
+                        <span class="text-xs font-semibold text-blue-500">Голосовой комментарий записан</span>
+                    </div>
+                    <button onclick="clearVoiceComment()" class="text-red-500 p-1 hover:bg-red-500/10 rounded-lg text-xs">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="text" id="comment-input" placeholder="Написать комментарий..." class="flex-1 bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    
+                    <button id="record-comment-voice-btn" onclick="toggleCommentVoiceRecording()" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 p-2.5 rounded-xl transition text-slate-700 dark:text-slate-200" title="Записать голосовое сообщение">
+                        <i data-lucide="mic" class="w-4 h-4" id="mic-icon-comment"></i>
+                    </button>
+
+                    <button id="send-comment-btn" onclick="sendComment()" class="bg-blue-600 hover:bg-blue-500 text-white p-2.5 rounded-xl transition shadow-md shadow-blue-500/20">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stories Creator Modal -->
+    <div id="create-story-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-nova-darkCard w-full max-w-md rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-nova-borderDark space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-pink-500"></i> Создать Историю
+                </h3>
+                <button onclick="closeModal('create-story-modal')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div>
+                <label class="text-xs font-semibold text-slate-400">Текст истории</label>
+                <textarea id="story-text-input" rows="3" placeholder="Что у вас нового?..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 mt-1 resize-none"></textarea>
+            </div>
+
+            <div>
+                <label class="text-xs font-semibold text-slate-400 block mb-1">Фото или Видео истории</label>
+                <div id="story-media-preview-box" class="hidden relative mb-2 rounded-xl overflow-hidden max-h-48 bg-black">
+                    <img id="story-img-preview" class="w-full h-48 object-cover hidden">
+                    <video id="story-video-preview" class="w-full h-48 object-cover hidden" controls></video>
+                    <button onclick="clearStoryMedia()" class="absolute top-2 right-2 p-1 bg-black/70 text-white rounded-full hover:bg-black">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <label class="cursor-pointer bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition">
+                    <i data-lucide="image" class="w-4 h-4 text-pink-500"></i> Выбрать фото / видео
+                    <input type="file" accept="image/*,video/*" onchange="handleStoryMediaUpload(event)" class="hidden">
+                </label>
+            </div>
+
+            <button onclick="publishStory()" class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 hover:opacity-90 text-white py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25 transition">
+                Опубликовать историю
+            </button>
+        </div>
+    </div>
+
+    <!-- Fullscreen Instagram Story Viewer -->
+    <div id="story-viewer-modal" class="fixed inset-0 bg-black/95 hidden z-50 flex items-center justify-center">
+        <div class="relative w-full max-w-sm h-full max-h-[85vh] bg-slate-900 rounded-2xl overflow-hidden flex flex-col justify-between p-4 shadow-2xl border border-slate-800">
+            <!-- Story Timer Progress Bar -->
+            <div class="w-full bg-slate-700 h-1 rounded-full overflow-hidden mb-3">
+                <div id="story-progress-bar" class="bg-gradient-to-r from-blue-500 to-pink-500 h-full w-0 transition-all duration-100"></div>
+            </div>
+
+            <!-- Story Header (User info) -->
+            <div class="flex items-center justify-between z-10 text-white mb-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-full nova-story-ring flex items-center justify-center">
+                        <img id="story-user-avatar" class="w-8 h-8 rounded-full object-cover border border-slate-900">
+                    </div>
+                    <div>
+                        <p id="story-user-name" class="font-bold text-xs">@user</p>
+                        <p id="story-time" class="text-[10px] text-slate-400">Только что</p>
+                    </div>
+                </div>
+                <button onclick="closeStoryViewer()" class="p-1 hover:bg-white/20 rounded-lg text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Story Body Content -->
+            <div id="story-body-content" class="flex-1 flex items-center justify-center relative overflow-hidden rounded-xl bg-black">
+                <!-- Injected Story content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Post Modal -->
+    <div id="share-post-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-nova-darkCard w-full max-w-md rounded-2xl p-5 shadow-2xl border border-slate-200 dark:border-nova-borderDark">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i data-lucide="send" class="w-5 h-5 text-blue-500"></i> Поделиться постом
+                </h3>
+                <button onclick="closeModal('share-post-modal')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">Выберите пользователя для отправки поста в сообщения:</p>
+            <div id="share-friends-list" class="space-y-2 max-h-60 overflow-y-auto">
+                <!-- Injected friends list -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Languages Modal -->
+    <div id="language-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-nova-darkCard w-full max-w-md rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-nova-borderDark">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="globe" class="w-5 h-5 text-blue-500"></i> Выбор языка / Language
+                </h3>
+                <button onclick="closeModal('language-modal')" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto p-1" id="languages-grid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        const LANGUAGES = [
+            "Русский", "Кыргызча", "English", "Қазақша", "O'zbekcha",
+            "Türkçe", "Deutsch", "Français", "Español", "Italiano",
+            "中文", "日本語", "한국어"
+        ];
+
+        // Media State Handlers
+        let selectedAvatarBase64 = null;
+        let selectedPostMedia = { type: null, url: null };
+        let selectedStoryMedia = { type: null, url: null };
+
+        // Seed Initial Database State
+        const defaultDB = {
+            users: {
+                "admin": { 
+                    password: "admin", 
+                    phone: "+996999000000", 
+                    bio: "Главный Администратор NovaSocial Platform 🛡️ (by: Zakypov Sabit)", 
+                    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", 
+                    lang: "Русский", 
+                    role: "admin",
+                    friends: ["alex", "elena"],
+                    requests: []
+                },
+                "alex": { 
+                    password: "123", 
+                    phone: "+996700123456", 
+                    bio: "Fullstack Web Developer & Tech Enthusiast 💻⚡", 
+                    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150", 
+                    lang: "Русский", 
+                    role: "user",
+                    friends: ["elena", "admin"],
+                    requests: []
+                },
+                "elena": { 
+                    password: "123", 
+                    phone: "+996555987654", 
+                    bio: "Фотограф, путешествия и искусство 📸⛰️✨", 
+                    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150", 
+                    lang: "English", 
+                    role: "user",
+                    friends: ["alex", "admin"],
+                    requests: []
+                }
+            },
+            posts: [
+                {
+                    id: 101,
+                    user: "elena",
+                    text: "Закат в горах! Невероятная атмосфера и свежий воздух. 🔥⛰️ #travel #nature",
+                    mediaType: "image",
+                    mediaUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800",
+                    likes: 18,
+                    likedBy: ["alex", "admin"],
+                    saved: ["admin"],
+                    comments: [
+                        { user: "alex", text: "Очень красивый кадр!", voiceUrl: null }
+                    ],
+                    createdAt: "15 мин. назад"
+                },
+                {
+                    id: 102,
+                    user: "admin",
+                    text: "Добро пожаловать в NovaSocial Platform (by: Zakypov Sabit)! Админ-панель доступна, создавайте истории в фирменном стиле NovaSocial! 🚀📱",
+                    mediaType: "image",
+                    mediaUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800",
+                    likes: 45,
+                    likedBy: ["elena", "alex"],
+                    saved: ["admin"],
+                    comments: [
+                        { user: "elena", text: "Дизайн историй смотрится супер!", voiceUrl: null }
+                    ],
+                    createdAt: "1 час назад"
+                }
+            ],
+            stories: [
+                {
+                    id: 201,
+                    user: "admin",
+                    mediaType: "image",
+                    mediaUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800",
+                    text: "Обновленный дизайн NovaSocial! ✨",
+                    createdAt: "10 мин. назад"
+                },
+                {
+                    id: 202,
+                    user: "elena",
+                    mediaType: "image",
+                    mediaUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800",
+                    text: "Всем отличного дня! 🌸",
+                    createdAt: "30 мин. назад"
+                },
+                {
+                    id: 203,
+                    user: "alex",
+                    mediaType: "text",
+                    bg: "from-blue-600 via-indigo-600 to-pink-500",
+                    text: "Работаем над новыми функциями! 🚀",
+                    createdAt: "2 часа назад"
+                }
+            ],
+            chats: {
+                "admin_alex": [
+                    { sender: "admin", text: "Привет, Alex! Добро пожаловать в NovaSocial.", voiceUrl: null, postRef: null, time: "10:00" },
+                    { sender: "alex", text: "Привет! Всё работает отлично!", voiceUrl: null, postRef: null, time: "10:05" }
+                ],
+                "admin_elena": [
+                    { sender: "elena", text: "Привет! Кружки историй очень красивые!", voiceUrl: null, postRef: null, time: "11:00" }
+                ]
+            },
+            notifications: [
+                { id: 1, type: "like", text: "поставил(а) лайк вашей публикации", user: "elena", time: "5 мин. назад" },
+                { id: 2, type: "comment", text: "оставил(а) комментарий к вашей записи", user: "alex", time: "20 мин. назад" }
+            ],
+            reels: [
+                { id: 301, user: "elena", videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-the-breeze-1187-large.mp4", caption: "Природа и покой 🌿✨ #reels #relax", likes: 112 },
+                { id: 302, user: "admin", videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4", caption: "NovaSocial Vibes 🌊💻 #byZakypovSabit", likes: 240 }
+            ]
+        };
+
+        let DB = JSON.parse(localStorage.getItem('nova_db_v4')) || defaultDB;
+        if (!DB.users["admin"]) DB.users["admin"] = defaultDB.users["admin"];
+        
+        let currentUser = localStorage.getItem('nova_user') || 'admin';
+        let activeTab = 'home';
+        let searchQuery = '';
+        let activeChatUser = 'alex';
+        let activeCommentPostId = null;
+        let activeSharePostId = null;
+
+        let recordedCommentVoiceBase64 = null;
+        let isRecordingCommentVoice = false;
+        let commentVoiceRecorder = null;
+        let commentAudioChunks = [];
+
+        let chatVoiceRecorder = null;
+        let chatAudioChunks = [];
+        let recordedChatVoiceBase64 = null;
+        let isRecordingChatVoice = false;
+
+        let storyTimer = null;
+
+        function saveDB() {
+            localStorage.setItem('nova_db_v4', JSON.stringify(DB));
+        }
+
+        function switchAccount(username) {
+            if (DB.users[username]) {
+                currentUser = username;
+                localStorage.setItem('nova_user', username);
+                showToast(`Переключено на аккаунт: @${username}`, 'info');
+                renderApp();
+            }
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            if (activeTab === 'home') {
+                renderHomeView(document.getElementById('view-container'));
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('nova_user');
+            switchTab('login');
+            showToast('Вы вышли из системы');
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-2.5 rounded-xl text-xs font-semibold text-white shadow-xl flex items-center gap-2 transition-all transform translate-y-2 opacity-0 pointer-events-auto ${
+                type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-emerald-500' : 'bg-blue-600'
+            }`;
+            toast.innerHTML = `<span>${msg}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            const titleEl = document.getElementById('page-title');
+            
+            const titles = {
+                'home': 'Главная',
+                'reels': 'Reels & Видео',
+                'chats': 'Сообщения',
+                'create': 'Новый пост',
+                'saved': 'Сохранённые',
+                'profile': 'Мой Профиль',
+                'admin': 'Админ-панель',
+                'settings': 'Настройки',
+                'login': 'Авторизация',
+                'register': 'Регистрация'
+            };
+
+            if (titleEl) titleEl.innerText = titles[tab] || 'NovaSocial';
+
+            renderApp();
+        }
+
+        function renderNavigation() {
+            const navMenu = document.getElementById('nav-menu');
+            const mobileMenu = document.getElementById('mobile-nav-menu');
+            const userCard = document.getElementById('sidebar-user-card');
+
+            if (!currentUser) {
+                if (navMenu) navMenu.innerHTML = '';
+                if (mobileMenu) mobileMenu.innerHTML = '';
+                if (userCard) userCard.innerHTML = '';
+                return;
+            }
+
+            const currUserData = DB.users[currentUser] || {};
+            const isAdmin = currUserData.role === 'admin' || currentUser === 'admin';
+
+            const items = [
+                { id: 'home', label: 'Главная', icon: 'home' },
+                { id: 'reels', label: 'Reels', icon: 'clapperboard' },
+                { id: 'chats', label: 'Чаты', icon: 'message-circle' },
+                { id: 'create', label: 'Создать', icon: 'plus-square' },
+                { id: 'saved', label: 'Сохранённые', icon: 'bookmark' },
+                { id: 'profile', label: 'Профиль', icon: 'user' }
+            ];
+
+            if (isAdmin) {
+                items.push({ id: 'admin', label: 'Админка', icon: 'shield-alert' });
+            }
+
+            // Desktop Nav
+            if (navMenu) {
+                navMenu.innerHTML = items.map(item => `
+                    <button onclick="switchTab('${item.id}')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-sm transition ${
+                        activeTab === item.id 
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' 
+                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-nova-darkCardHover'
+                    }">
+                        <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                        <span>${item.label}</span>
+                    </button>
+                `).join('');
+            }
+
+            // Mobile Nav
+            if (mobileMenu) {
+                mobileMenu.innerHTML = items.slice(0, 5).map(item => `
+                    <button onclick="switchTab('${item.id}')" class="flex flex-col items-center gap-1 p-2 rounded-xl text-xs font-medium ${
+                        activeTab === item.id ? 'text-blue-500 font-bold' : 'text-slate-500 dark:text-slate-400'
+                    }">
+                        <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                        <span>${item.label}</span>
+                    </button>
+                `).join('');
+            }
+
+            // User Bottom Card
+            if (userCard) {
+                userCard.innerHTML = `
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('profile')">
+                        <div class="w-10 h-10 rounded-full nova-story-ring flex items-center justify-center">
+                            <img src="${currUserData.avatar || 'https://placehold.co/150'}" class="w-9 h-9 rounded-full object-cover">
+                        </div>
+                        <div class="truncate max-w-[110px]">
+                            <p class="font-bold text-xs truncate">@${currentUser}</p>
+                            <p class="text-[10px] text-slate-400 truncate">${currUserData.bio || 'Участник'}</p>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('settings')" class="p-2 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-slate-800 transition">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                    </button>
+                `;
+            }
+
+            lucide.createIcons();
+        }
+
+        function renderApp() {
+            renderNavigation();
+            renderFriendsRecommendations();
+            const container = document.getElementById('view-container');
+            if (!container) return;
+
+            if (!currentUser && activeTab !== 'login' && activeTab !== 'register') {
+                activeTab = 'login';
+            }
+
+            switch (activeTab) {
+                case 'home':
+                    renderHomeView(container);
+                    break;
+                case 'reels':
+                    renderReelsView(container);
+                    break;
+                case 'chats':
+                    renderChatsView(container);
+                    break;
+                case 'create':
+                    renderCreatePostView(container);
+                    break;
+                case 'saved':
+                    renderSavedPostsView(container);
+                    break;
+                case 'profile':
+                    renderProfileView(container);
+                    break;
+                case 'admin':
+                    renderAdminView(container);
+                    break;
+                case 'settings':
+                    renderSettingsView(container);
+                    break;
+                case 'login':
+                    renderLoginView(container);
+                    break;
+                case 'register':
+                    renderRegisterView(container);
+                    break;
+                default:
+                    renderHomeView(container);
+            }
+
+            lucide.createIcons();
+        }
+
+        // --- STORIES BAR RENDERING ---
+        function renderStoriesBar() {
+            let storiesHTML = `
+                <div class="flex items-center gap-3 overflow-x-auto pb-3 mb-4 no-scrollbar">
+                    <!-- Create Story Button -->
+                    <div onclick="openModal('create-story-modal')" class="flex flex-col items-center gap-1 cursor-pointer flex-shrink-0">
+                        <div class="relative w-16 h-16 rounded-full border-2 border-dashed border-blue-500 flex items-center justify-center bg-blue-500/10 hover:bg-blue-500/20 transition">
+                            <i data-lucide="plus" class="w-6 h-6 text-blue-500"></i>
+                            <img src="${DB.users[currentUser]?.avatar || ''}" class="absolute bottom-0 right-0 w-5 h-5 rounded-full border border-white dark:border-nova-darkCard object-cover">
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">История</span>
+                    </div>
+            `;
+
+            (DB.stories || []).forEach(story => {
+                const author = DB.users[story.user] || {};
+                storiesHTML += `
+                    <div onclick="openStoryViewer(${story.id})" class="flex flex-col items-center gap-1 cursor-pointer flex-shrink-0 group">
+                        <div class="w-16 h-16 rounded-full nova-story-ring p-[2.5px] group-hover:scale-105 transition-transform duration-200">
+                            <img src="${author.avatar || 'https://placehold.co/150'}" class="w-full h-full rounded-full object-cover border-2 border-white dark:border-nova-darkCard">
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300 truncate max-w-[64px]">@${story.user}</span>
+                    </div>
+                `;
+            });
+
+            storiesHTML += `</div>`;
+            return storiesHTML;
+        }
+
+        function renderHomeView(container) {
+            let posts = DB.posts || [];
+            if (searchQuery) {
+                posts = posts.filter(p => p.text.toLowerCase().includes(searchQuery.toLowerCase()) || p.user.toLowerCase().includes(searchQuery.toLowerCase()));
+            }
+
+            let html = renderStoriesBar();
+
+            if (posts.length === 0) {
+                html += `
+                    <div class="text-center py-12 text-slate-400 bg-white dark:bg-nova-darkCard rounded-2xl border border-slate-200 dark:border-nova-borderDark">
+                        <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+                        <p class="font-semibold text-sm">Постов пока нет</p>
+                    </div>
+                `;
+            } else {
+                html += `<div class="space-y-4">`;
+                posts.slice().reverse().forEach(post => {
+                    html += renderPostCard(post);
+                });
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // --- POST CARD RENDERER ---
+        function renderPostCard(post) {
+            const author = DB.users[post.user] || { avatar: 'https://placehold.co/150', bio: '' };
+            const isLiked = post.likedBy && post.likedBy.includes(currentUser);
+            const isSaved = post.saved && post.saved.includes(currentUser);
+            const isAdmin = DB.users[currentUser]?.role === 'admin' || currentUser === 'admin';
+
+            return `
+                <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-4 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition space-y-3">
+                    <!-- Post Header -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3 cursor-pointer" onclick="viewUserProfile('${post.user}')">
+                            <div class="w-10 h-10 rounded-full nova-story-ring flex items-center justify-center">
+                                <img src="${author.avatar || 'https://placehold.co/150'}" class="w-9 h-9 rounded-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm leading-tight flex items-center gap-1">
+                                    @${post.user}
+                                    ${post.user === 'admin' ? '<i data-lucide="badge-check" class="w-4 h-4 text-blue-500 inline"></i>' : ''}
+                                </h4>
+                                <span class="text-[10px] text-slate-400">${post.createdAt}</span>
+                            </div>
+                        </div>
+                        ${(isAdmin || post.user === currentUser) ? `
+                            <button onclick="deletePost(${post.id})" class="text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition" title="Удалить пост">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <!-- Post Text -->
+                    <p class="text-sm leading-relaxed">${escapeHtml(post.text)}</p>
+
+                    <!-- Post Media (Image / Video) -->
+                    ${post.mediaUrl ? `
+                        <div class="rounded-xl overflow-hidden bg-black max-h-96 flex items-center justify-center">
+                            ${post.mediaType === 'video' ? `
+                                <video src="${post.mediaUrl}" controls class="w-full max-h-96 object-cover"></video>
+                            ` : `
+                                <img src="${post.mediaUrl}" class="w-full max-h-96 object-cover hover:scale-[1.01] transition duration-300">
+                            `}
+                        </div>
+                    ` : ''}
+
+                    <!-- Post Action Bar -->
+                    <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3 text-slate-500">
+                        <div class="flex items-center gap-4">
+                            <button onclick="toggleLike(${post.id})" class="flex items-center gap-1.5 text-xs font-semibold hover:text-red-500 transition ${isLiked ? 'text-red-500' : ''}">
+                                <i data-lucide="heart" class="w-4 h-4 ${isLiked ? 'fill-red-500' : ''}"></i>
+                                <span>${post.likes || 0}</span>
+                            </button>
+                            <button onclick="openCommentsModal(${post.id})" class="flex items-center gap-1.5 text-xs font-semibold hover:text-blue-500 transition">
+                                <i data-lucide="message-square" class="w-4 h-4"></i>
+                                <span>${(post.comments || []).length}</span>
+                            </button>
+                            <button onclick="openShareModal(${post.id})" class="flex items-center gap-1.5 text-xs font-semibold hover:text-pink-500 transition">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <button onclick="toggleSavePost(${post.id})" class="p-1 rounded-lg hover:text-amber-500 transition ${isSaved ? 'text-amber-500' : ''}">
+                            <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-amber-500' : ''}"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderChatsView(container) {
+            const allUsers = Object.keys(DB.users).filter(u => u !== currentUser);
+            if (!activeChatUser || activeChatUser === currentUser) {
+                activeChatUser = allUsers[0] || 'alex';
+            }
+
+            const chatKey = [currentUser, activeChatUser].sort().join('_');
+            const messages = DB.chats[chatKey] || [];
+            const activePartnerData = DB.users[activeChatUser] || { avatar: 'https://placehold.co/150' };
+
+            container.innerHTML = `
+                <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl overflow-hidden flex flex-col md:flex-row h-[75vh] shadow-sm">
+                    <!-- Chat Users Sidebar -->
+                    <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-200 dark:border-nova-borderDark flex flex-col bg-slate-50/50 dark:bg-slate-900/30">
+                        <div class="p-3 border-b border-slate-200 dark:border-nova-borderDark font-bold text-sm flex items-center justify-between">
+                            <span>Сообщения</span>
+                            <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i>
+                        </div>
+                        <div class="overflow-y-auto flex-1 divide-y divide-slate-100 dark:divide-slate-800">
+                            ${allUsers.map(u => {
+                                const uData = DB.users[u] || {};
+                                return `
+                                    <div onclick="selectChat('${u}')" class="p-3 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-nova-darkCardHover transition ${activeChatUser === u ? 'bg-blue-500/10 dark:bg-blue-500/20 border-l-4 border-blue-500' : ''}">
+                                        <div class="relative">
+                                            <img src="${uData.avatar || 'https://placehold.co/150'}" class="w-10 h-10 rounded-full object-cover">
+                                            <span class="w-3 h-3 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-nova-darkCard absolute bottom-0 right-0"></span>
+                                        </div>
+                                        <div class="truncate">
+                                            <p class="font-bold text-xs">@${u}</p>
+                                            <p class="text-[11px] text-slate-400 truncate">${uData.bio || 'Пользователь NovaSocial'}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Chat Active Message Thread -->
+                    <div class="flex-1 flex flex-col h-full bg-white dark:bg-nova-darkCard">
+                        <!-- Chat Header -->
+                        <div class="p-3 border-b border-slate-200 dark:border-nova-borderDark flex items-center gap-3 bg-slate-50/30 dark:bg-slate-900/20">
+                            <img src="${activePartnerData.avatar || 'https://placehold.co/150'}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs">@${activeChatUser}</h4>
+                                <span class="text-[10px] text-emerald-500 font-semibold">В сети</span>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages Container -->
+                        <div id="chat-messages-box" class="flex-1 p-4 overflow-y-auto space-y-3">
+                            ${messages.length === 0 ? `
+                                <div class="text-center text-slate-400 py-12 text-xs">
+                                    Начни разговор с @${activeChatUser}! 👋
+                                </div>
+                            ` : messages.map(m => `
+                                <div class="flex flex-col ${m.sender === currentUser ? 'items-end' : 'items-start'}">
+                                    <div class="max-w-[75%] p-3 rounded-2xl text-xs ${
+                                        m.sender === currentUser 
+                                        ? 'bg-blue-600 text-white rounded-br-none' 
+                                        : 'bg-slate-100 dark:bg-nova-darkCardHover text-slate-800 dark:text-slate-100 rounded-bl-none'
+                                    }">
+                                        ${m.postRef ? `
+                                            <div class="mb-2 p-2 bg-black/20 rounded-xl text-[11px] border border-white/20">
+                                                <span class="font-bold">Пост от @${m.postRef.user}:</span>
+                                                <p class="italic truncate">${escapeHtml(m.postRef.text)}</p>
+                                            </div>
+                                        ` : ''}
+                                        <p>${escapeHtml(m.text)}</p>
+                                        <span class="text-[9px] opacity-70 block text-right mt-1">${m.time || ''}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Chat Input Box -->
+                        <div class="p-3 border-t border-slate-200 dark:border-nova-borderDark flex items-center gap-2">
+                            <input type="text" id="chat-input" onkeypress="if(event.key === 'Enter') sendChatMessage()" placeholder="Написать сообщение..." class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white p-2.5 rounded-xl transition shadow-md shadow-blue-500/20">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const box = document.getElementById('chat-messages-box');
+                if (box) box.scrollTop = box.scrollHeight;
+            }, 50);
+
+            lucide.createIcons();
+        }
+
+        function selectChat(user) {
+            activeChatUser = user;
+            renderChatsView(document.getElementById('view-container'));
+        }
+
+        function sendChatMessage(postRef = null) {
+            const input = document.getElementById('chat-input');
+            const text = input ? input.value.trim() : '';
+
+            if (!text && !postRef) return;
+
+            const chatKey = [currentUser, activeChatUser].sort().join('_');
+            if (!DB.chats[chatKey]) DB.chats[chatKey] = [];
+
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            DB.chats[chatKey].push({
+                sender: currentUser,
+                text: text || 'Поделился постом',
+                postRef: postRef,
+                time: timeStr
+            });
+
+            saveDB();
+            if (input) input.value = '';
+            renderChatsView(document.getElementById('view-container'));
+        }
+
+        function toggleLike(postId) {
+            const post = DB.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            if (!post.likedBy) post.likedBy = [];
+            const idx = post.likedBy.indexOf(currentUser);
+
+            if (idx > -1) {
+                post.likedBy.splice(idx, 1);
+                post.likes = Math.max(0, (post.likes || 1) - 1);
+            } else {
+                post.likedBy.push(currentUser);
+                post.likes = (post.likes || 0) + 1;
+            }
+
+            saveDB();
+            renderApp();
+        }
+
+        function toggleSavePost(postId) {
+            const post = DB.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            if (!post.saved) post.saved = [];
+            const idx = post.saved.indexOf(currentUser);
+
+            if (idx > -1) {
+                post.saved.splice(idx, 1);
+                showToast('Удалено из сохранённых');
+            } else {
+                post.saved.push(currentUser);
+                showToast('Сохранено в закладки!', 'success');
+            }
+
+            saveDB();
+            renderApp();
+        }
+
+        function deletePost(postId) {
+            DB.posts = DB.posts.filter(p => p.id !== postId);
+            saveDB();
+            showToast('Пост успешно удалён', 'info');
+            renderApp();
+        }
+
+        function openCommentsModal(postId) {
+            activeCommentPostId = postId;
+            const post = DB.posts.find(p => p.id === postId);
+            const listEl = document.getElementById('comments-list');
+            
+            if (listEl && post) {
+                listEl.innerHTML = (post.comments || []).map(c => `
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-nova-darkCardHover text-xs space-y-1">
+                        <span class="font-bold text-blue-500">@${c.user}</span>
+                        <p>${escapeHtml(c.text)}</p>
+                    </div>
+                `).join('') || '<p class="text-xs text-slate-400 text-center py-4">Нет комментариев. Будьте первым!</p>';
+            }
+
+            openModal('comments-modal');
+        }
+
+        function sendComment() {
+            const input = document.getElementById('comment-input');
+            if (!input || !input.value.trim() || !activeCommentPostId) return;
+
+            const post = DB.posts.find(p => p.id === activeCommentPostId);
+            if (post) {
+                if (!post.comments) post.comments = [];
+                post.comments.push({
+                    user: currentUser,
+                    text: input.value.trim()
+                });
+                saveDB();
+                input.value = '';
+                openCommentsModal(activeCommentPostId);
+                renderApp();
+            }
+        }
+
+        function openShareModal(postId) {
+            activeSharePostId = postId;
+            const list = document.getElementById('share-friends-list');
+            const allUsers = Object.keys(DB.users).filter(u => u !== currentUser);
+
+            if (list) {
+                list.innerHTML = allUsers.map(u => `
+                    <div onclick="sharePostToUser('${u}')" class="p-3 flex items-center justify-between bg-slate-50 dark:bg-nova-darkCardHover rounded-xl cursor-pointer hover:bg-blue-500/10 transition">
+                        <div class="flex items-center gap-2">
+                            <img src="${DB.users[u]?.avatar || 'https://placehold.co/150'}" class="w-8 h-8 rounded-full object-cover">
+                            <span class="font-bold text-xs">@${u}</span>
+                        </div>
+                        <span class="text-xs text-blue-500 font-semibold flex items-center gap-1"><i data-lucide="send" class="w-3.5 h-3.5"></i> Отправить</span>
+                    </div>
+                `).join('');
+            }
+
+            openModal('share-post-modal');
+            lucide.createIcons();
+        }
+
+        function sharePostToUser(targetUser) {
+            const post = DB.posts.find(p => p.id === activeSharePostId);
+            if (!post) return;
+
+            activeChatUser = targetUser;
+            sendChatMessage(post);
+            closeModal('share-post-modal');
+            showToast(`Пост отправлен @${targetUser}`, 'success');
+            switchTab('chats');
+        }
+
+        function renderReelsView(container) {
+            let html = `<div class="space-y-6 max-w-sm mx-auto">`;
+            (DB.reels || []).forEach(reel => {
+                html += `
+                    <div class="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl border border-slate-800">
+                        <video src="${reel.videoUrl}" controls class="w-full h-full object-cover"></video>
+                        <div class="absolute bottom-4 left-4 right-4 text-white z-10 pointer-events-none bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 rounded-xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <img src="${DB.users[reel.user]?.avatar || 'https://placehold.co/150'}" class="w-8 h-8 rounded-full border border-white">
+                                <span class="font-bold text-xs">@${reel.user}</span>
+                            </div>
+                            <p class="text-xs font-medium">${reel.caption}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderSavedPostsView(container) {
+            const savedPosts = (DB.posts || []).filter(p => p.saved && p.saved.includes(currentUser));
+            if (savedPosts.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-12">У вас нет сохранённых постов</p>`;
+                return;
+            }
+
+            let html = `<div class="space-y-4">`;
+            savedPosts.forEach(post => {
+                html += renderPostCard(post);
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderCreatePostView(container) {
+            selectedPostMedia = { type: null, url: null };
+            container.innerHTML = `
+                <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-6 space-y-4 max-w-lg mx-auto shadow-sm">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <i data-lucide="plus-square" class="w-5 h-5 text-blue-500"></i> Создать публикацию
+                    </h3>
+
+                    <textarea id="new-post-text" rows="4" placeholder="Поделитесь своими мыслями..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400 block mb-1">Медиафайл (выбрать фото или видео)</label>
+                        <div id="post-media-preview-box" class="hidden relative mb-2 rounded-xl overflow-hidden max-h-56 bg-black flex items-center justify-center">
+                            <img id="post-img-preview" class="max-h-56 w-full object-cover hidden">
+                            <video id="post-video-preview" class="max-h-56 w-full object-cover hidden" controls></video>
+                            <button onclick="clearPostMedia()" class="absolute top-2 right-2 p-1.5 bg-black/70 text-white rounded-full hover:bg-black">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <label class="cursor-pointer bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 w-full py-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition">
+                            <i data-lucide="image" class="w-4 h-4 text-blue-500"></i> Загрузить файл из устройства
+                            <input type="file" accept="image/*,video/*" onchange="handlePostFileSelect(event)" class="hidden">
+                        </label>
+                    </div>
+
+                    <button onclick="publishPost()" class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg shadow-blue-500/25 transition">
+                        Опубликовать
+                    </button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function handlePostFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const isVideo = file.type.startsWith('video');
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                selectedPostMedia = {
+                    type: isVideo ? 'video' : 'image',
+                    url: e.target.result
+                };
+
+                const box = document.getElementById('post-media-preview-box');
+                const img = document.getElementById('post-img-preview');
+                const video = document.getElementById('post-video-preview');
+
+                if (box) box.classList.remove('hidden');
+
+                if (isVideo) {
+                    if (img) img.classList.add('hidden');
+                    if (video) {
+                        video.src = e.target.result;
+                        video.classList.remove('hidden');
+                    }
+                } else {
+                    if (video) video.classList.add('hidden');
+                    if (img) {
+                        img.src = e.target.result;
+                        img.classList.remove('hidden');
+                    }
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function clearPostMedia() {
+            selectedPostMedia = { type: null, url: null };
+            const box = document.getElementById('post-media-preview-box');
+            if (box) box.classList.add('hidden');
+        }
+
+        function publishPost() {
+            const text = document.getElementById('new-post-text')?.value.trim();
+
+            if (!text && !selectedPostMedia.url) {
+                showToast('Заполните текст или добавьте файл', 'error');
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                user: currentUser,
+                text: text || '',
+                mediaType: selectedPostMedia.type || 'image',
+                mediaUrl: selectedPostMedia.url || null,
+                likes: 0,
+                likedBy: [],
+                saved: [],
+                comments: [],
+                createdAt: 'Только что'
+            };
+
+            DB.posts.unshift(newPost);
+            saveDB();
+            showToast('Пост опубликован!', 'success');
+            selectedPostMedia = { type: null, url: null };
+            switchTab('home');
+        }
+
+        function renderProfileView(container) {
+            const user = DB.users[currentUser] || {};
+            const myPosts = (DB.posts || []).filter(p => p.user === currentUser);
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-6 text-center space-y-4 shadow-sm">
+                        <div class="w-24 h-24 rounded-full nova-story-ring p-1 mx-auto">
+                            <img src="${user.avatar || 'https://placehold.co/150'}" class="w-full h-full rounded-full object-cover border-2 border-white dark:border-nova-darkCard">
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold flex items-center justify-center gap-1">
+                                @${currentUser}
+                                ${currentUser === 'admin' ? '<i data-lucide="badge-check" class="w-5 h-5 text-blue-500"></i>' : ''}
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">${user.bio || 'Информация не указана'}</p>
+                            <p class="text-[11px] text-pink-500 font-semibold mt-1">${user.phone || ''}</p>
+                        </div>
+
+                        <div class="flex justify-center gap-6 border-t border-slate-100 dark:border-slate-800 pt-4 text-xs font-semibold">
+                            <div>
+                                <p class="text-base font-bold text-blue-500">${myPosts.length}</p>
+                                <p class="text-slate-400">Постов</p>
+                            </div>
+                            <div>
+                                <p class="text-base font-bold text-pink-500">${user.friends ? user.friends.length : 0}</p>
+                                <p class="text-slate-400">Друзей</p>
+                            </div>
+                        </div>
+
+                        <button onclick="openEditProfileModal()" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold py-2.5 rounded-xl text-xs transition">
+                            Редактировать профиль
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-base">Мои публикации</h3>
+                        ${myPosts.map(p => renderPostCard(p)).join('') || '<p class="text-xs text-slate-400 text-center py-6">Публикаций пока нет</p>'}
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function openEditProfileModal() {
+            const user = DB.users[currentUser] || {};
+            document.getElementById('edit-bio-input').value = user.bio || '';
+            document.getElementById('edit-phone-input').value = user.phone || '';
+            document.getElementById('edit-avatar-preview').src = user.avatar || 'https://placehold.co/150';
+            selectedAvatarBase64 = null;
+            openModal('edit-profile-modal');
+        }
+
+        function previewAvatarFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedAvatarBase64 = e.target.result;
+                document.getElementById('edit-avatar-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfileChanges() {
+            const user = DB.users[currentUser];
+            if (!user) return;
+
+            if (selectedAvatarBase64) {
+                user.avatar = selectedAvatarBase64;
+            }
+            user.bio = document.getElementById('edit-bio-input').value.trim();
+            user.phone = document.getElementById('edit-phone-input').value.trim();
+
+            saveDB();
+            closeModal('edit-profile-modal');
+            showToast('Профиль сохранён!', 'success');
+            renderApp();
+        }
+
+        function renderAdminView(container) {
+            const allUsers = Object.keys(DB.users);
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg">
+                        <h3 class="text-xl font-bold flex items-center gap-2">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i> Панель Администратора
+                        </h3>
+                        <p class="text-xs text-amber-100 mt-1">Управление пользователями и контентом NovaSocial Platform (by: Zakypov Sabit)</p>
+                    </div>
+
+                    <!-- Statistics Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark p-4 rounded-xl text-center">
+                            <p class="text-2xl font-black text-blue-500">${allUsers.length}</p>
+                            <p class="text-[11px] text-slate-400 font-semibold">Пользователей</p>
+                        </div>
+                        <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark p-4 rounded-xl text-center">
+                            <p class="text-2xl font-black text-pink-500">${DB.posts.length}</p>
+                            <p class="text-[11px] text-slate-400 font-semibold">Постов</p>
+                        </div>
+                        <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark p-4 rounded-xl text-center">
+                            <p class="text-2xl font-black text-indigo-500">${DB.stories.length}</p>
+                            <p class="text-[11px] text-slate-400 font-semibold">Историй</p>
+                        </div>
+                        <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark p-4 rounded-xl text-center">
+                            <p class="text-2xl font-black text-emerald-500">v4.0</p>
+                            <p class="text-[11px] text-slate-400 font-semibold">Версия</p>
+                        </div>
+                    </div>
+
+                    <!-- User Management Table -->
+                    <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-4 shadow-sm space-y-3">
+                        <h4 class="font-bold text-sm">Управление пользователями</h4>
+                        <div class="space-y-2 max-h-80 overflow-y-auto">
+                            ${allUsers.map(u => {
+                                const uData = DB.users[u];
+                                return `
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-nova-darkCardHover text-xs">
+                                        <div class="flex items-center gap-3">
+                                            <img src="${uData.avatar || 'https://placehold.co/150'}" class="w-8 h-8 rounded-full object-cover">
+                                            <div>
+                                                <p class="font-bold">@${u} <span class="text-[10px] text-pink-500 font-semibold">(${uData.role || 'user'})</span></p>
+                                                <p class="text-[10px] text-slate-400">${uData.phone || 'Нет телефона'}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <button onclick="switchAccount('${u}')" class="px-2.5 py-1 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 font-semibold rounded-lg">Вход</button>
+                                            ${u !== 'admin' ? `
+                                                <button onclick="deleteUser('${u}')" class="p-1 text-red-500 hover:bg-red-500/10 rounded-lg">
+                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                </button>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function deleteUser(username) {
+            delete DB.users[username];
+            DB.posts = DB.posts.filter(p => p.user !== username);
+            saveDB();
+            showToast(`Пользователь @${username} удалён`, 'info');
+            renderAdminView(document.getElementById('view-container'));
+        }
+
+        function handleStoryMediaUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const isVideo = file.type.startsWith('video');
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                selectedStoryMedia = {
+                    type: isVideo ? 'video' : 'image',
+                    url: e.target.result
+                };
+
+                const box = document.getElementById('story-media-preview-box');
+                const img = document.getElementById('story-img-preview');
+                const video = document.getElementById('story-video-preview');
+
+                if (box) box.classList.remove('hidden');
+
+                if (isVideo) {
+                    if (img) img.classList.add('hidden');
+                    if (video) {
+                        video.src = e.target.result;
+                        video.classList.remove('hidden');
+                    }
+                } else {
+                    if (video) video.classList.add('hidden');
+                    if (img) {
+                        img.src = e.target.result;
+                        img.classList.remove('hidden');
+                    }
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function clearStoryMedia() {
+            selectedStoryMedia = { type: null, url: null };
+            const box = document.getElementById('story-media-preview-box');
+            if (box) box.classList.add('hidden');
+        }
+
+        function publishStory() {
+            const text = document.getElementById('story-text-input')?.value.trim();
+
+            if (!text && !selectedStoryMedia.url) {
+                showToast('Добавьте текст или медиафайл', 'error');
+                return;
+            }
+
+            const newStory = {
+                id: Date.now(),
+                user: currentUser,
+                mediaType: selectedStoryMedia.type || (text ? 'text' : 'image'),
+                mediaUrl: selectedStoryMedia.url || null,
+                bg: 'from-blue-600 via-indigo-600 to-pink-500',
+                text: text || '',
+                createdAt: 'Только что'
+            };
+
+            if (!DB.stories) DB.stories = [];
+            DB.stories.unshift(newStory);
+            saveDB();
+
+            closeModal('create-story-modal');
+            if (document.getElementById('story-text-input')) document.getElementById('story-text-input').value = '';
+            clearStoryMedia();
+            showToast('История опубликована!', 'success');
+            renderApp();
+        }
+
+        function openStoryViewer(storyId) {
+            const story = DB.stories.find(s => s.id === storyId);
+            if (!story) return;
+
+            const author = DB.users[story.user] || { avatar: 'https://placehold.co/150' };
+
+            document.getElementById('story-user-avatar').src = author.avatar || 'https://placehold.co/150';
+            document.getElementById('story-user-name').innerText = `@${story.user}`;
+            document.getElementById('story-time').innerText = story.createdAt || 'Только что';
+
+            const contentBox = document.getElementById('story-body-content');
+            if (contentBox) {
+                if (story.mediaType === 'video' && story.mediaUrl) {
+                    contentBox.innerHTML = `<video src="${story.mediaUrl}" autoplay class="w-full h-full object-cover"></video>`;
+                } else if (story.mediaUrl) {
+                    contentBox.innerHTML = `
+                        <img src="${story.mediaUrl}" class="w-full h-full object-cover">
+                        ${story.text ? `<div class="absolute bottom-6 left-4 right-4 bg-black/60 backdrop-blur-md p-3 rounded-xl text-white text-xs text-center font-medium">${escapeHtml(story.text)}</div>` : ''}
+                    `;
+                } else {
+                    contentBox.innerHTML = `
+                        <div class="w-full h-full bg-gradient-to-tr ${story.bg || 'from-blue-600 to-pink-500'} flex items-center justify-center p-6 text-center text-white font-bold text-lg">
+                            ${escapeHtml(story.text)}
+                        </div>
+                    `;
+                }
+            }
+
+            openModal('story-viewer-modal');
+
+            const progressBar = document.getElementById('story-progress-bar');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                if (storyTimer) clearInterval(storyTimer);
+                let progress = 0;
+                storyTimer = setInterval(() => {
+                    progress += 2;
+                    progressBar.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(storyTimer);
+                        closeStoryViewer();
+                    }
+                }, 100);
+            }
+        }
+
+        function closeStoryViewer() {
+            if (storyTimer) clearInterval(storyTimer);
+            closeModal('story-viewer-modal');
+        }
+
+        function renderSettingsView(container) {
+            container.innerHTML = `
+                <div class="bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark rounded-2xl p-6 space-y-4 max-w-md mx-auto shadow-sm">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <i data-lucide="settings" class="w-5 h-5 text-blue-500"></i> Настройки
+                    </h3>
+                    <div class="space-y-2">
+                        <button onclick="openLanguageModal()" class="w-full flex justify-between items-center p-3 rounded-xl bg-slate-50 dark:bg-nova-darkCardHover text-sm font-semibold">
+                            <span>Язык приложения</span>
+                            <span class="text-xs text-blue-500">${DB.users[currentUser]?.lang || 'Русский'}</span>
+                        </button>
+                        <button onclick="toggleTheme()" class="w-full flex justify-between items-center p-3 rounded-xl bg-slate-50 dark:bg-nova-darkCardHover text-sm font-semibold">
+                            <span>Переключить тему</span>
+                            <i data-lucide="sun" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="logout()" class="w-full text-left p-3 rounded-xl bg-red-500/10 text-red-500 text-sm font-bold hover:bg-red-500/20 transition">
+                            Выйти из аккаунта
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function renderLoginView(container) {
+            container.innerHTML = `
+                <div class="max-w-md mx-auto bg-white dark:bg-nova-darkCard border border-slate-200 dark:border-nova-borderDark p-6 rounded-2xl shadow-xl space-y-4 my-8">
+                    <div class="text-center space-y-1">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-pink-500 mx-auto flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-blue-500/30 mb-2">
+                            NS
+                        </div>
+                        <h2 class="text-2xl font-bold">Вход в NovaSocial</h2>
+                        <p class="text-xs text-pink-500 font-semibold">by: Zakypov Sabit</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400">Имя пользователя</label>
+                        <input type="text" id="login-username" placeholder="admin, alex, elena" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl px-4 py-2.5 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400">Пароль</label>
+                        <input type="password" id="login-password" placeholder="admin или 123" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-nova-borderDark rounded-xl px-4 py-2.5 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-pink-500 hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg shadow-blue-500/25 transition">
+                        Войти
+                    </button>
+                    <div class="p-3 bg-slate-100 dark:bg-slate-800/50 rounded-xl text-xs text-slate-500 space-y-1">
+                        <p class="font-bold text-slate-700 dark:text-slate-300">Быстрый вход:</p>
+                        <p>• admin / admin (Администратор)</p>
+                        <p>• alex / 123</p>
+                        <p>• elena / 123</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (!username || !password) {
+                showToast('Заполните все поля', 'error');
+                return;
+            }
+
+            if (DB.users[username] && DB.users[username].password === password) {
+                currentUser = username;
+                localStorage.setItem('nova_user', username);
+                showToast(`Добро пожаловать, @${username}!`, 'success');
+                switchTab('home');
+            } else {
+                showToast('Неверный логин или пароль', 'error');
+            }
+        }
+
+        function renderFriendsRecommendations() {
+            const container = document.getElementById('sidebar-friends-recommendations');
+            if (!container) return;
+
+            const allUsers = Object.keys(DB.users);
+            container.innerHTML = allUsers.map(uName => {
+                const u = DB.users[uName];
+                return `
+                    <div class="flex items-center justify-between text-xs p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-nova-darkCardHover transition">
+                        <div class="flex items-center gap-2">
+                            <img src="${u.avatar || 'https://placehold.co/150'}" class="w-7 h-7 rounded-full object-cover">
+                            <span class="font-bold">@${uName}</span>
+                        </div>
+                        <button onclick="switchAccount('${uName}')" class="text-blue-500 font-semibold hover:underline text-[10px]">Вход</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openLanguageModal() {
+            const grid = document.getElementById('languages-grid');
+            if (grid) {
+                grid.innerHTML = LANGUAGES.map(lang => `
+                    <button onclick="selectLanguage('${lang}')" class="p-2.5 rounded-xl border border-slate-200 dark:border-nova-borderDark hover:bg-blue-600 hover:text-white text-xs font-semibold transition text-center">
+                        ${lang}
+                    </button>
+                `).join('');
+            }
+            openModal('language-modal');
+        }
+
+        function selectLanguage(lang) {
+            if (DB.users[currentUser]) {
+                DB.users[currentUser].lang = lang;
+                saveDB();
+            }
+            showToast(`Язык изменён на ${lang}`, 'success');
+            closeModal('language-modal');
+            renderApp();
+        }
+
+        function openNotificationsModal() {
+            const list = document.getElementById('notifications-list');
+            if (list) {
+                list.innerHTML = (DB.notifications || []).map(n => `
+                    <div class="p-3 bg-slate-50 dark:bg-nova-darkCardHover rounded-xl text-xs space-y-1">
+                        <p class="font-semibold"><span class="text-blue-500">@${n.user}</span> ${n.text}</p>
+                        <span class="text-[10px] text-slate-400 block">${n.time}</span>
+                    </div>
+                `).join('');
+            }
+            openModal('notifications-modal');
+        }
+
+        function viewUserProfile(username) {
+            showToast(`Профиль пользователя @${username}`);
+        }
+
+        function escapeHtml(text) {
+            return String(text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        window.onload = function() {
+            renderApp();
+        };
+    </script>
+</body>
+</html>
